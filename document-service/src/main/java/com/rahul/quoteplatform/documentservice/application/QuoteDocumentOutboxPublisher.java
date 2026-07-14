@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class QuoteDocumentOutboxPublisher {
 
-    private final OutboxEventRepository outboxEventRepository;
+    private final com.rahul.quoteplatform.documentservice.application.OutboxEventRepository outboxEventRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final Clock clock;
 
