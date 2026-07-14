@@ -1,0 +1,30 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: validation-service
+  datasource:
+    url: ${VALIDATION_DB_URL:jdbc:postgresql://localhost:5432/quotes}
+    username: ${VALIDATION_DB_USERNAME:quotes}
+    password: ${VALIDATION_DB_PASSWORD:quotes}
+  sql:
+    init:
+      mode: always
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: validation-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+validation:
+  consumer:
+    retry:
+      max-attempts: ${VALIDATION_RETRY_MAX_ATTEMPTS:3}
+  outbox:
+    poll-interval-ms: ${VALIDATION_OUTBOX_POLL_INTERVAL_MS:1000}
