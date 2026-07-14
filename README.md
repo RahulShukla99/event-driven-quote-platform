@@ -1,5 +1,13 @@
 # event-driven-quote-platform
 
+## Implemented scope
+
+- Quote API with transactional outbox
+- Validation, Pricing, Document, and Notification services
+- Idempotent consumers with processed-event tracking
+- Retry with exponential backoff
+- DLQ publishing after retries are exhausted
+
 ## Local run
 
 1. Start infrastructure:
@@ -17,6 +25,8 @@ cd pricing-service && mvn spring-boot:run
 cd document-service && mvn spring-boot:run
 cd notification-service && mvn spring-boot:run
 ```
+
+Or start them one by one in separate shells after Docker is up.
 
 ## Happy path
 
@@ -59,3 +69,17 @@ Expected result after 3 attempts:
 - `quote.validated` → Pricing Service
 - `quote.priced` → Document Service
 - `quote.document.generated` → Notification Service
+- `quote.notification.sent` → final event
+
+## DLQ message shape
+
+```json
+{
+  "eventId": "...",
+  "sourceTopic": "quote.validated",
+  "payloadJson": "{...}",
+  "exceptionMessage": "db down",
+  "failedAt": "2026-07-14T10:15:30Z",
+  "retryCount": 3
+}
+```
