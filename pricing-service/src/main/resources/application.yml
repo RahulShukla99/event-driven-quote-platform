@@ -1,0 +1,30 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: pricing-service
+  datasource:
+    url: ${PRICING_DB_URL:jdbc:postgresql://localhost:5432/quotes}
+    username: ${PRICING_DB_USERNAME:quotes}
+    password: ${PRICING_DB_PASSWORD:quotes}
+  sql:
+    init:
+      mode: always
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: pricing-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+pricing:
+  consumer:
+    retry:
+      max-attempts: ${PRICING_RETRY_MAX_ATTEMPTS:3}
+  outbox:
+    poll-interval-ms: ${PRICING_OUTBOX_POLL_INTERVAL_MS:1000}

@@ -1,0 +1,30 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: document-service
+  datasource:
+    url: ${DOCUMENT_DB_URL:jdbc:postgresql://localhost:5432/quotes}
+    username: ${DOCUMENT_DB_USERNAME:quotes}
+    password: ${DOCUMENT_DB_PASSWORD:quotes}
+  sql:
+    init:
+      mode: always
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: document-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+document:
+  consumer:
+    retry:
+      max-attempts: ${DOCUMENT_RETRY_MAX_ATTEMPTS:3}
+  outbox:
+    poll-interval-ms: ${DOCUMENT_OUTBOX_POLL_INTERVAL_MS:1000}
